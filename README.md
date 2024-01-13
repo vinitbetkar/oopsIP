@@ -18,15 +18,17 @@ This script provides a convenient way to extract IPv4 addresses associated with 
 
 Installation
 
-1. Clone the repository.
-git clone https://github.com/vinitbetkar/oopsIP.git
-2.Navigate to the project directory.
-cd oopsIP
-3.Change permission
-chmod +x * 
-4. usage
-5.  ./oopsIP -d example.com -o output.txt
+1. Clone the repository
+  git clone https://github.com/vinitbetkar/oopsIP.git
+2. Navigate to the Folder
+   cd oopsIP
+3. Change Permisssion
+  chmod +x *
+4. USage
+   ./oopsIP -d target.com -o outputfile.txt 
+  
 
+   
 
 Dependencies
 dig, host, nslookup: DNS resolution tools
