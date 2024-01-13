@@ -19,11 +19,13 @@ This script provides a convenient way to extract IPv4 addresses associated with 
 Installation
 
 1. Clone the repository.
-2.git clone https://github.com/vinitbetkar/oopsIP.git
-3.Navigate to the project directory.
+git clone https://github.com/vinitbetkar/oopsIP.git
+2.Navigate to the project directory.
 cd oopsIP
-
-4. ./oopsIP -d example.com -o output.txt
+3.Change permission
+chmod +x * 
+4. usage
+5.  ./oopsIP -d example.com -o output.txt
 
 
 Dependencies
