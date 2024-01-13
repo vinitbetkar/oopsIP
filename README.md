@@ -6,8 +6,7 @@
 ## Overview
 This script provides a convenient way to extract IPv4 addresses associated with a given domain by utilizing multiple DNS resolution tools. The script supports various options for customization and includes the ability to save results to a file.
  
-## Contributor
-https://github.com/indyashMandloi
+
 
 ## Features
 - Supports DNS resolution using `dig`, `host`, and `nslookup` tools.
