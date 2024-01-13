@@ -33,3 +33,6 @@ Installation
 Dependencies
 dig, host, nslookup: DNS resolution tools
 awk: Text processing tool
+
+Screen Shots 
+![image](https://github.com/vinitbetkar/oopsIP/assets/114536926/acb65524-b619-4ecb-82a4-724adb1263f0)
