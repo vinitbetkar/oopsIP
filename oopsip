@@ -1,0 +1,140 @@
+#!/bin/bash
+
+echo '''
+                                                  
+                                              ____________    
+                              :::.            |           |    
+                          =%@@@@@@#-          | oops IP   |  
+                        .%@@@@@@@@@@*         |___________|  
+                        *@@@@@@@@@@@@=          \/            
+                        #@@@@@@@@@@@@=                      
+                        :@@@@@@@@@@@#.                      
+                         .*@@@@@@@%=                        
+                   -#%@@%#=.:-==-.                          
+                .+%@@@@@@@@@-                               
+              -#@@@@@@@@@@@@@.                              
+             *@@@@@@@@@@@@@@@:                              
+             *@@@@@@@@@@@@@@+                               
+              *@@@@@@@@@@@@+                                
+              -@@@@@@@@@@@+                                 
+             .%@@@@@@@@@@+                                  
+             :@@@@@@@@@@+                                   
+             .@@@@@@@@@@-                                   
+              =@@@@@@@%-  *%#: ::                           
+               -@@@@@@%    ..  +%#. .                       
+                -@@@@@@+           =@%-                     
+                 *@@@@@@.            :.-=                   
+                 :@@@@@@*              -%#                  
+                  #@@@@@%                 -=                
+                 .@@@@@@*                 =@+               
+                 =@@@@@@-                   ..              
+                 *@@@@@%.                   *@:             
+                .%@@@@@*                    .=.             
+                -@@@@@@-                     **             
+                .*@@@@*                      *#             
+                  .::.                     security                
+                  
+                                                  
+                                                  
+
+''' | lolcat
+echo "Author:VINIT BETKAR
+     Make Bug Hunting Wild With Automation
+    The One piece Is Real !" | lolcat
+# Function to check if all required tools are installed
+check_tool_dependencies() {
+  local tools=("dig" "host" "nslookup" "awk")
+
+  for tool in "${tools[@]}"; do
+    if ! command -v "$tool" &> /dev/null; then
+      echo "Error: '$tool' is not installed. Please install it and try again."
+      exit 1
+    fi
+  done
+}
+
+# Function to display script usage
+usage() {
+  echo "Usage: $0 [-d <domain>] [-o <output_file>] [-h|--help]"
+  echo "  -d, --domain <domain>    Specify the domain for DNS resolution"
+  echo "  -o, --output <output_file> Save results to a file"
+  echo "  -h, --help               Display this help menu"
+  exit 1
+}
+
+# Check tool dependencies before proceeding
+check_tool_dependencies
+
+# Default values
+domain=""
+output_file=""
+
+# Parse command-line options
+while getopts "d:o:h" opt; do
+  case $opt in
+    d)
+      domain="$OPTARG"
+      ;;
+    o)
+      output_file="$OPTARG"
+      ;;
+    h)
+      usage
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG"
+      usage
+      ;;
+  esac
+done
+
+# Check if the domain is provided
+if [ -z "$domain" ]; then
+  echo "Error: Please provide a domain."
+  usage
+fi
+
+# Function to extract IPv4 addresses using a specific tool
+extract_ipv4() {
+  local tool="$1"
+  local result
+  case $tool in
+    "dig")
+      result=$(dig +short "$domain" | grep -E '^([0-9]{1,3}\.){3}[0-9]{1,3}$' 2>/dev/null)
+      ;;
+    "host")
+      result=$(host -t A "$domain" | awk '/has address/ {print $NF}' 2>/dev/null)
+      ;;
+    "nslookup")
+      result=$(nslookup -type=A "$domain" | awk '/Address:/ {print $NF}' 2>/dev/null)
+      ;;
+  esac
+  echo "$result"
+}
+
+# Array of DNS resolution tools
+dns_tools=("dig" "host" "nslookup")
+
+# Iterate through DNS tools and extract IPv4 addresses
+all_ipv4_addresses=""
+for tool in "${dns_tools[@]}"; do
+  addresses=$(extract_ipv4 "$tool")
+  all_ipv4_addresses+="$addresses "
+done
+
+# Remove duplicates and sort the addresses
+unique_ipv4_addresses=$(echo "$all_ipv4_addresses" | tr ' ' '\n' | sort -u)
+
+# Check if any IPv4 addresses were found
+if [ -z "$unique_ipv4_addresses" ]; then
+  echo "No IPv4 addresses found for $domain using the specified tools."
+  exit 1
+fi
+
+# Display or save the results
+if [ -n "$output_file" ]; then
+  echo -e "IPv4 addresses for $domain:\n$unique_ipv4_addresses" > "$output_file"
+  echo "Results saved to $output_file"
+else
+  echo -e "IPv4 addresses for $domain:\n$unique_ipv4_addresses"
+fi
